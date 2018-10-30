@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:camel="http://camel.apache.org/schema/spring"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+">
+    <bean id="stdout" class="com.ubicompsystem.camel.StandardOutBean"/>
+    <bean id="stringEncoder" class="io.netty.handler.codec.string.StringDecoder"/>
+    <bean id="byteEncoder" class="io.netty.handler.codec.bytes.ByteArrayEncoder"/>
+    <bean id="stringAppend" class="com.ubicompsystem.camel.StringAppendAggregation"/>
+
+    <camel:camelContext id="printRoutes" autoStartup="true">
+        <camel:route autoStartup="true">
+            <camel:from uri="netty4:tcp://127.0.0.1:9199?encoder=#byteEncoder&amp;receiveBufferSize=1000000&amp;keepAlive=true"/>
+            <camel:log message="Incoming ${body}"/>
+        </camel:route>
+    </camel:camelContext>
+</beans>
